@@ -34,5 +34,5 @@ def detecter_injections(donnees, ip):
         payload = log['payload_texte']
         for pattern in PATTERNS_SUSPECTS:
             if pattern in payload:
-                alertes.append(f"❌ SIGNATURE : {pattern}")
+                alertes.append(f" SIGNATURE : {pattern}")
     return alertes

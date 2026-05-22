@@ -10,13 +10,6 @@ def detecter_flood(donnees, ip):
 
     nb_requetes = comptage[ip]
     if nb_requetes > SEUIL_FLOOD:
-        return (
-            True,
-            f"❌ FLOOD DÉTECTÉ "
-            f"({nb_requetes} requêtes)"
-        )
+        return (True, f" FLOOD DÉTECTÉ ", f"({nb_requetes} requêtes)")
 
-    return (
-        False,
-        "✅ Aucun flood détecté"
-    )
+    return (False," Aucun flood détecté")
