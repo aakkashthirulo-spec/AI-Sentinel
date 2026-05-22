@@ -24,27 +24,33 @@ PAYS_SUSPECTS = ["RUSSIE", "CHINE", "COREE DU NORD"]
 
 def analyser_log(log, scores_z, i, score_risque, menaces):
     # PAYLOAD ANORMAL - ROUGE
-    if abs(scores_z[i]) > SEUIL_ZSCORE:
-        print(colored(f"❌ PAYLOAD ANORMAL ({log['payload_num']})","red",attrs=["bold"]))
-        score_risque += 20
+    try:
+        taille_payload = float(log['payload_size'])
+    except (ValueError, KeyError):
+        taille_payload = 0
 
+    if abs(scores_z[i]) > SEUIL_ZSCORE:
+        print(colored(f"PAYLOAD ANORMAL ({log['payload_size']})", "red", attrs=["bold"]))
+        score_risque += 20
         if "Payload Anormal" not in menaces:
             menaces.append("Payload Anormal")
 
     # ACTIVITÉ SUSPECTE - MAGENTA
-    if not (8 <= log['heure'] <= 18):
-        print(colored(
-            f"⚠️  ACTIVITÉ SUSPECTE ({log['heure']}h)","magenta",attrs=["bold"]))
+    try:
+        heure_log = int(log['heure'])
+    except (ValueError, KeyError):
+        heure_log = 12
+
+    if not (8 <= heure_log <= 18):
+        print(colored(f"ACTIVITÉ SUSPECTE ({heure_log}h)", "magenta", attrs=["bold"]))
         score_risque += 5
 
     # PAYS SUSPECT - MAGENTA
-    if log['pays'] in PAYS_SUSPECTS:
-        print(colored(
-            f"⚠️  PAYS SUSPECT : {log['pays']}","magenta",attrs=["bold"]))
+    if log.get('pays', '').upper() in PAYS_SUSPECTS:
+        print(colored(f"PAYS SUSPECT : {log['pays']}", "magenta", attrs=["bold"]))
         score_risque += 10
 
     return score_risque, menaces
-
 
 # =====================================================
 # ANALYSE PRINCIPALE
@@ -54,10 +60,17 @@ def analyser_systeme(chemin_fichier, ip):
     donnees = charger_logs(chemin_fichier)
 
     if not donnees:
-        cprint("❌ Aucun log disponible", "red", attrs=["bold"])
+        cprint("Aucun log disponible", "red", attrs=["bold"])
         return
 
-    tailles = [d['payload_num'] for d in donnees]
+    # Adaptation au nouveau nom de colonne 'payload_size' pour le Z-score
+    tailles = []
+    for d in donnees:
+        try:
+            tailles.append(float(d['payload_size']))
+        except (ValueError, KeyError):
+            tailles.append(0)
+
     scores_z = calculer_zscores(tailles)
 
     score_risque = 0
@@ -69,15 +82,11 @@ def analyser_systeme(chemin_fichier, ip):
 
     os.system("clear")
 
-    cprint("\n===================================", "cyan", attrs=["bold"])
+    cprint("===================================", "cyan", attrs=["bold"])
     cprint("        AI-SENTINEL — LIVE MODE", "cyan", attrs=["bold"])
     cprint("===================================", "cyan", attrs=["bold"])
 
-    print(colored(
-        f"\n[SCAN INITIÉ] CIBLE : {ip}",
-        "cyan",
-        attrs=["bold"]
-    ))
+    print(colored(f"[SCAN INITIÉ] CIBLE : {ip}", "cyan", attrs=["bold"]))
 
     # =====================================================
     # PRE-CHECK GLOBAL
@@ -89,17 +98,17 @@ def analyser_systeme(chemin_fichier, ip):
     injections = detecter_injections(donnees, ip)
 
     if flood:
-        print(colored("❌ FLOOD DÉTECTÉ", "red", attrs=["bold"]))
+        print(colored(" FLOOD DÉTECTÉ", "red", attrs=["bold"]))
         score_risque += 30
         menaces.append("Flood")
 
     if scan:
-        print(colored("❌ PORT SCANNING DÉTECTÉ", "red", attrs=["bold"]))
+        print(colored(" PORT SCANNING DÉTECTÉ", "red", attrs=["bold"]))
         score_risque += 20
         menaces.append("Port Scanning")
 
     if brute:
-        print(colored("❌ BRUTE FORCE DÉTECTÉ", "red", attrs=["bold"]))
+        print(colored(" BRUTE FORCE DÉTECTÉ", "red", attrs=["bold"]))
         score_risque += 40
         menaces.append("Brute Force")
 
@@ -121,12 +130,9 @@ def analyser_systeme(chemin_fichier, ip):
             continue
 
         # LOGS
-        print(colored(
-            f"[LOG] {log['heure']}h | {log['ip_source']} | "
-            f"{log['port']} | {log['pays']} | {log['payload_num']}",
-            "cyan"
-        ))
-
+        
+        print(colored(f"[LOG] {log['heure']} | {log['ip_source']} | {log['port']} | {log['pays']} | {log['payload_num']}", "cyan"))
+        
         score_risque, menaces = analyser_log(log,scores_z,i,score_risque,menaces)
 
         time.sleep(0.5)
@@ -147,22 +153,20 @@ def analyser_systeme(chemin_fichier, ip):
         niveau = "CRITIQUE"
         couleur = "red"
 
-    print(colored(
-        f"📊 SCORE DE RISQUE : {score_risque}","red",attrs=["bold"]))
+    print(colored(f" SCORE DE RISQUE : {score_risque}","red",attrs=["bold"]))
 
-    print(colored(
-        f"🚨 NIVEAU : {niveau}",couleur,attrs=["bold"]))
+    print(colored(f" NIVEAU : {niveau}",couleur,attrs=["bold"]))
 
     # =====================================================
     # MENACES
     # =====================================================
 
     if menaces:
-        print(colored("\n☠️  MENACES DÉTECTÉES :", "red", attrs=["bold"]))
+        print(colored("\n  MENACES DÉTECTÉES :", "red", attrs=["bold"]))
         for m in set(menaces):
             print(colored(f" - {m}", "red"))
     else:
-        print(colored("\n✅ Aucune menace détectée", "green", attrs=["bold"]))
+        print(colored("\n Aucune menace détectée", "green", attrs=["bold"]))
 
     print(colored("===================================\n", "cyan", attrs=["bold"]))
 
