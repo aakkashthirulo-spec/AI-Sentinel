@@ -251,10 +251,20 @@ Le système doit auditer en continu le trafic réseau afin d'isoler les comporte
 \caption{Détection d'une anomalie volumétrique par le moteur IA en Python.}
 \end{figure}
 
-\section{Manuel utilisateur}
-Pour exécuter le système complet de surveillance, ouvrez votre terminal Linux et lancez la commande suivante :
+\section{Manuel utilisateur (Windows)}
+Pour exécuter le système complet de surveillance sous Windows, deux méthodes sont possibles :
+
+\subsection*{Option 1 : Via l'invite de commandes}
+Ouvrez votre terminal Windows (Invite de commandes ou PowerShell) dans le dossier du projet et lancez la commande suivante :
 \begin{verbatim}
-python3 sentinel_main.py trafic_reseau.csv
+python sentinel_main.py trafic_reseau.csv
+\end{verbatim}
+
+\subsection*{Option 2 : Lancement rapide ("Zéro Manipulation")}
+Vous pouvez également double-cliquer directement sur le script d'exécution \texttt{Démarrer\_Sentinel.bat} créé à la racine du projet. Ce script contient les lignes suivantes :
+\begin{verbatim}
+@echo off
+python sentinel_main.py trafic_reseau.csv
 \end{verbatim}
 
 \end{document}
