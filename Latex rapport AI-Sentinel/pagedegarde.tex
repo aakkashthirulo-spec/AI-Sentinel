@@ -19,6 +19,11 @@
   \def\@datedebut{#1}
 }
 
+% --- AJOUT DE LA VARIABLE GITHUB POUR LA PAGE DE GARDE ---
+\def\@github{}
+\newcommand{\github}[1]{
+  \def\@github{#1}
+} 
 
 \def\@datefin{\today}
 \newcommand{\datefin}[1]{
@@ -164,6 +169,14 @@
     %{\bfseries Entreprise d'accueil : \@entreprise}\\
     {\bfseries Projet réalisé du \@datedebut\ au \@datefin}\\
     %	{\Large{\bfseries Spécialité doctorale ``\@specialite''}}\\
+
+    % --- AFFICHAGE PROPRE DU LIEN GITHUB S'IL EST REMPLI ---
+    \vspace{0.5cm}
+    \ifx\@github\@empty
+    \else
+      {\small\textbf{Dépôt GitHub : } \url{\@github}}\\
+    \fi
+    
     \vspace{2cm}
     $\ $\\
     \vspace{0.5cm}

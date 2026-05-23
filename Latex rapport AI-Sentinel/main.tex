@@ -18,10 +18,15 @@
 \entreprise{Licence MIASHS - Université Paris Nanterre}
 \datedebut{26 mars 2026}
 \datefin{23 mai 2026}
+\github{https://github.com/aakkashthirulo-spec/AI-Sentinel}
+\github{https://github.com/aakkashthirulo-spec/AI-Sentinel}
 
 \membrea{Thirulokkumar Aakkash - 45018080}
-\membreb{Cornu Valentin - 45016459}
-\membrec{Demian Nicolae - 45014894}
+\membreb{Cornu Valentin - 45016459 \\ Demian Nicolae - 45014894}
+
+
+
+
 
 \begin{document}
 
@@ -32,7 +37,7 @@
 % ==========================================
 \section*{Remerciements}
 Nous tenons à remercier l’équipe pédagogique pour ce projet qui nous a permis
-d’allier l’intelligence artificielle aux probl´ematiques concr`etes de la cybersécurité.
+d’allier l’intelligence artificielle aux problématiques concrètes de la cybersécurité.
 
 \newpage
 \tableofcontents
@@ -114,6 +119,60 @@ Nous avons utilisé le compilateur \textbf{GCC} pour optimiser les performances 
     \item \textbf{Non réalisé} : La coupure automatique de l'interface réseau (prévention active) n'a pas pu être intégrée, faute de droits administrateurs étendus sur notre environnement de test.
     \item \textbf{Répartition} : Nicolae s'est chargé du module de capture en C (performance) et il s'est occupé du fichier sentinel\_main.py qui permet de lancer et d'arrêter simultanément, via une interface graphique simple, le module de capture de trafic en C et le moteur d'analyse comportementale en Python, Valentin du moteur d'IA en Python (analyse), et Aakkash de la coordination globale, de l'intégration du pipeline et de la sécurité du flux de confiance.
 \end{itemize}
+\subsection{Architecture du Projet ``AI-Sentinel'' : Approche Modulaire et Multilangage}
+Pour répondre aux exigences de performance et d'accessibilité de notre système de détection d'intrusions (IDS), nous avons opté pour une architecture strictement modulaire. Le projet est divisé en trois programmes distincts qui communiquent entre eux. Cette séparation des tâches permet d'utiliser les forces spécifiques de chaque langage (C et Python) tout en rendant le code plus facile à maintenir.
+
+\subsubsection{Le Capteur Réseau : Sentinel-Sensor (Code en C)}
+\begin{itemize}
+    \item \textbf{Rôle :} C'est le ``bouclier'' et les ``yeux'' de notre programme. Il s'occupe de la capture des données brutes du réseau Wi-Fi.
+    \item \textbf{Pourquoi le langage C ?} Le C a été imposé et choisi pour sa proximité avec le matériel (bas niveau) et sa gestion stricte de la mémoire. Pour écouter un réseau en temps réel, il faut un langage extrêmement rapide qui ne sature pas le processeur.
+    \item \textbf{Fonctionnement concret :} Ce programme intercepte les trames réseaux (IP source, ports, taille du payload, contenu) et les formate instantanément sous forme de texte dans un fichier de journalisation continu (le fichier \texttt{traffic\_logs.csv}). Il agit comme un producteur de données.
+\end{itemize}
+
+\subsubsection{Le Moteur de Détection IA : Sentinel-AI (Code en Python)}
+\begin{itemize}
+    \item \textbf{Rôle :} C'est le ``cerveau'' du projet. Il dispose d'une logique algorithmique pour détecter les anomalies et les attaques.
+    \item \textbf{Pourquoi le langage Python ?} Python excelle dans le traitement de données et l'implémentation de logique algorithmique complexe. Il est idéal pour calculer des statistiques en temps réel (comme les Z-scores sur la taille des paquets) et manipuler des chaînes de caractères pour détecter des signatures d'attaques.
+    \item \textbf{Fonctionnement concret :} Ce script lit le fichier CSV généré par le programme C en ``Live Mode''. Il applique des filtres de sécurité pour identifier les comportements malveillants :
+    \begin{itemize}
+        \item \textbf{Flood / Scan de ports :} Détectés par une fréquence anormale de requêtes.
+        \item \textbf{Brute Force / Injections (ex: SQL) :} Détectés par l'analyse du contenu du payload.
+    \end{itemize}
+    \item \textbf{Score de risque :} Le programme calcule un score final et affiche une interface console dynamique et colorée alertant l'utilisateur sur la gravité de la menace.
+\end{itemize}
+
+Pour répondre aux exigences de performance et d'accessibilité de notre système de détection d'intrusions (IDS), nous avons opté pour une architecture strictement modulaire. Le projet est divisé en trois programmes distincts qui communiquent entre eux. Cette séparation des tâches permet d'utiliser les forces spécifiques de chaque langage (C et Python) tout en rendant le code plus facile à maintenir.
+
+\subsubsection*{Le Capteur Réseau : Sentinel-Sensor (Code en C)}
+\begin{itemize}
+    \item \textbf{Rôle :} C'est le ``bouclier'' et les ``yeux'' de notre programme. Il s'occupe de la capture des données brutes du réseau Wi-Fi.
+    \item \textbf{Pourquoi le langage C ?} Le C a été imposé et choisi pour sa proximité avec le matériel (bas niveau) et sa gestion stricte de la mémoire. Pour écouter un réseau en temps réel, il faut un langage extrêmement rapide qui ne sature pas le processeur.
+    \item \textbf{Fonctionnement concret :} Ce programme intercepte les trames réseaux (IP source, ports, taille du payload, contenu) et les formate instantanément sous forme de texte dans un fichier de journalisation continu (le fichier \texttt{traffic\_logs.csv}). Il agit comme un producteur de données.
+\end{itemize}
+
+\subsubsection*{Le Moteur de Détection IA : Sentinel-AI (Code en Python)}
+\begin{itemize}
+    \item \textbf{Rôle :} C'est le ``cerveau'' du projet. Il dispose d'une logique algorithmique pour détecter les anomalies et les attaques.
+    \item \textbf{Pourquoi le langage Python ?} Python excelle dans le traitement de données et l'implémentation de logique algorithmique complexe. Il est idéal pour calculer des statistiques en temps réel (comme les Z-scores sur la taille des paquets) et manipuler des chaînes de caractères pour détecter des signatures d'attaques.
+    \item \textbf{Fonctionnement concret :} Ce script lit le fichier CSV généré par le programme C en ``Live Mode''. Il applique des filtres de sécurité pour identifier les comportements malveillants :
+    \begin{itemize}
+        \item \textbf{Flood / Scan de ports :} Détectés par une fréquence anormale de requêtes.
+        \item \textbf{Brute Force / Injections (ex: SQL) :} Détectés par l'analyse du contenu du payload.
+    \end{itemize}
+    \item \textbf{Score de risque :} Le programme calcule un score final et affiche une interface console dynamique et colorée alertant l'utilisateur sur la gravité de la menace.
+\end{itemize}
+
+\subsubsection*{L'Interface Utilisateur : Sentinel-Launcher (Orchestrateur Python)}
+\begin{itemize}
+    \item \textbf{Rôle :} Rendre l'outil accessible à un utilisateur novice (``lambda'') via une interface graphique simple (bouton Activer/Désactiver).
+    \item \textbf{Le ``Pourquoi'' de cette approche :} En cybersécurité, un outil n'est efficace que s'il est utilisé. Demander à un utilisateur sans compétences informatiques d'ouvrir un terminal, de compiler du C, puis d'exécuter un script Python avec des arguments est inenvisageable. Nous avons donc décidé de masquer toute la complexité technique derrière une application ``Plug \& Play''. L'utilisateur clique sur un bouton, et le système se protège tout seul.
+    \item \textbf{Le ``Comment'' (Implémentation technique) :} Nous avons créé un script Python supplémentaire qui agit comme un chef d'orchestre.
+    \begin{itemize}
+        \item \textbf{L'interface visuelle :} Elle est générée grâce à la bibliothèque native \texttt{tkinter}, qui permet de dessiner une fenêtre applicative (boutons, labels d'état) sans avoir besoin d'installer de modules externes complexes.
+        \item \textbf{L'orchestration (Le module \texttt{subprocess}) :} Lorsque l'utilisateur clique sur ``Activer'', ce programme utilise la bibliothèque \texttt{subprocess}. Cette bibliothèque permet de lancer d'autres exécutables en arrière-plan (processus enfants). L'orchestrateur va donc lancer silencieusement notre Sentinel-Sensor (C) en tâche de fond, puis ouvrir la console de notre Sentinel-AI (Python). Ainsi, les deux programmes s'exécutent simultanément et communiquent de manière totalement transparente pour l'utilisateur.
+    \end{itemize}
+\ postseason
+\end{itemize}
 
 % ==========================================
 % SECTION 6 : DIFFICULTÉS
@@ -137,7 +196,7 @@ que Python facilite l’analyse et la détection intelligente. Cette organisatio
 
 \subsection{Perspectives}
 Une amélioration possible serait l’ajout d’une interface graphique pour visualiser
-les alertes en temps r´eel sur un tableau de bord.
+les alertes en temps réel sur un tableau de bord.
 
 \newpage
 
@@ -146,7 +205,8 @@ les alertes en temps r´eel sur un tableau de bord.
 % ==========================================
 \section{Bibliographie}
 \begin{thebibliography}{1}
-   \bibitem[LAM94]{lam1} L. Lamport, {\it \LaTeX{}: A Document Preparation System}, Addison-Wesley, 1994.
+   \bibitem[GEM26]{gemini} Google AI, \emph{Assistant de génération de code, d'audit de sécurité et de mise en page \LaTeX{} Gemini}, version 2026.
+   \bibitem[MAM26]{mammouth} MIA, \emph{Assistant d'analyse logique et de co-conception algorithmique Python Mammouth AI}, version 2026.
 \end{thebibliography}
 
 \newpage
