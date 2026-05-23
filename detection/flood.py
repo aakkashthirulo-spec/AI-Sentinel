@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-SEUIL_FLOOD = 100
+SEUIL_FLOOD = 10
 
 def detecter_flood(donnees, ip):
     comptage = defaultdict(int)
@@ -10,6 +10,6 @@ def detecter_flood(donnees, ip):
 
     nb_requetes = comptage[ip]
     if nb_requetes > SEUIL_FLOOD:
-        return (True, f" FLOOD DÉTECTÉ ", f"({nb_requetes} requêtes)")
+        return (True, f" FLOOD DÉTECTÉ ({nb_requetes} requêtes)")
 
     return (False," Aucun flood détecté")

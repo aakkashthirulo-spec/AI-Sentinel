@@ -86,11 +86,12 @@ int main() {
     // Initialisation du générateur aléatoire
     srand(time(NULL));
     
-    const char *chemin_fichier = "logs.csv";
+    const char *chemin_fichier = "trafic_reseau.csv";
     const char *ip_cible = "192.168.1.100"; // L'IP que tu passeras à ton Python
     
     // Ouverture du fichier en mode ajout (append) ou création
     FILE *fichier_log = fopen(chemin_fichier, "w");
+    fprintf(fichier_log,"heure,ip_source,port,pays,payload_num,payload_content\n");
     if (fichier_log == NULL) {
         perror("Erreur lors de l'ouverture du fichier de log");
         return EXIT_FAILURE;

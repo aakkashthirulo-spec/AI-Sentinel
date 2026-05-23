@@ -1,4 +1,7 @@
 PATTERNS_SUSPECTS = [
+    "' OR '1'='1",
+    " OR 1=1",
+    
     # SQL Injection
     "DROP TABLE",
     "SELECT *",

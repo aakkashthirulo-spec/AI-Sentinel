@@ -22,10 +22,10 @@ def activer_protection():
         # 2. Lancement de votre IA Python existante
         # Sur Windows, on peut lancer une nouvelle fenêtre console pour voir vos jolies couleurs
         if os.name == 'nt':
-            processus_python = subprocess.Popen(["start", "cmd", "/c", "python analyse.py"], shell=True)
+            processus_python = subprocess.Popen(["start", "cmd", "/c", "python sentinel.py"], shell=True)
         else:
             # AJOUT ICI : Commande osascript insérée à sa place exacte pour Mac
-            processus_python = subprocess.Popen(["osascript", "-e", f'tell app "Terminal" to do script "cd {os.getcwd()} && python3 sentinel.py 192.168.1.100"'])
+            processus_python = subprocess.Popen(["osascript", "-e", f'tell app "Terminal" to do script "cd \'{os.getcwd()}\' && python3 sentinel.py 192.168.1.100"'])
             
         # Mise à jour visuelle de l'interface
         label_statut.config(text="STATUT : ACTIVÉ ET EN LIGNE", fg="green")

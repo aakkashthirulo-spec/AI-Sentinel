@@ -11,18 +11,22 @@ def charger_logs(chemin_fichier):
                 ligne['ip_source'] = ligne['ip_source'].strip()
 
                 # Payload texte
-                payload = str(ligne.get('payload_size', '')).upper()
+                payload = str(ligne.get('payload_num', '')).upper()
                 ligne['payload_texte'] = payload
 
                 # Payload numérique
                 try:
-                    ligne['payload_num'] = float(ligne.get('payload_size', 0))
+                    ligne['payload_num'] = float(ligne.get('payload_num', 0))
                 except ValueError:
                     ligne['payload_num'] = 0.0
 
                 # Heure
                 try:
-                    ligne['heure'] = int(ligne.get('heure', 12))
+                    heure_complete = ligne.get('heure', '12:00:00')
+                    try:
+                        ligne['heure'] = int(heure_complete.split(":")[0])
+                    except:
+                        ligne['heure'] = 12
                 except:
                     ligne['heure'] = 12
 
@@ -41,8 +45,5 @@ def charger_logs(chemin_fichier):
                 donnees.append(ligne)
 
     except FileNotFoundError:
-        print(
-            f"❌ Fichier introuvable : "
-            f"{chemin_fichier}"
-        )
+        print(f"Fichier introuvable : {chemin_fichier}")
     return donnees
