@@ -251,20 +251,40 @@ Le système doit auditer en continu le trafic réseau afin d'isoler les comporte
 \caption{Détection d'une anomalie volumétrique par le moteur IA en Python.}
 \end{figure}
 
-\section{Manuel utilisateur (Windows)}
-Pour exécuter le système complet de surveillance sous Windows, deux méthodes sont possibles :
+\section{Manuel utilisateur}
+Le système complet de surveillance peut être exécuté selon votre système d'exploitation (Windows ou Mac/Linux).
 
-\subsection*{Option 1 : Via l'invite de commandes}
+\subsection*{1. Version Windows}
+
+\subsubsection*{Option 1 : Via l'invite de commandes}
 Ouvrez votre terminal Windows (Invite de commandes ou PowerShell) dans le dossier du projet et lancez la commande suivante :
 \begin{verbatim}
 python sentinel_main.py trafic_reseau.csv
 \end{verbatim}
 
-\subsection*{Option 2 : Lancement rapide ("Zéro Manipulation")}
+\subsubsection*{Option 2 : Lancement rapide ("Zéro Manipulation")}
 Vous pouvez également double-cliquer directement sur le script d'exécution \texttt{Démarrer\_Sentinel.bat} créé à la racine du projet. Ce script contient les lignes suivantes :
 \begin{verbatim}
 @echo off
 python sentinel_main.py trafic_reseau.csv
 \end{verbatim}
+
+---
+
+\subsection*{2. Version Mac / Linux}
+
+\subsubsection*{Option 1 : Via le Terminal}
+Ouvrez votre Terminal dans le dossier du projet et lancez la commande suivante :
+\begin{verbatim}
+python3 sentinel_main.py trafic_reseau.csv
+\end{verbatim}
+
+\subsubsection*{Option 2 : Lancement rapide}
+Vous pouvez exécuter le script Shell nommé \texttt{start.sh} créé à la racine du projet. Ce script contient les lignes suivantes :
+\begin{verbatim}
+#!/bin/bash
+python3 sentinel_main.py trafic_reseau.csv
+\end{verbatim}
+Pour rendre ce script exécutable la première fois, lancez la commande \texttt{chmod +x start.sh} dans votre terminal.
 
 \end{document}
